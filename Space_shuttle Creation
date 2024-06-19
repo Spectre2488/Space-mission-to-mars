@@ -1,0 +1,76 @@
+def get_fuel_tanks():
+    num_tanks = int(input("Enter the number of fuel tanks (1, 2, 3 or more): "))
+    primary_tank_capacity = float(input("Enter the capacity of the primary fuel tank (from Earth to space) in liters: "))
+    exploration_tank_capacity = float(input("Enter the capacity of the exploration fuel tank (from space to planet) in liters: "))
+    return num_tanks, primary_tank_capacity, exploration_tank_capacity
+
+def get_component_details(component_name):
+    length = float(input(f"Enter the length of {component_name} in meters: "))
+    width = float(input(f"Enter the width of {component_name} in meters: "))
+    height = float(input(f"Enter the height of {component_name} in meters: "))
+    weight = float(input(f"Enter the weight of {component_name} in kg: "))
+    return length, width, height, weight
+
+def get_components():
+    components = {
+        "Orbiter": None,
+        "Solid Rocket Boosters (SRBs)": None,
+        "External Tank (ET)": None,
+        "Orbital Maneuvering System (OMS)": None,
+        "Reaction Control System (RCS)": None,
+        "Landing Gear": None,
+        "Avionics and Control Systems": None,
+        "Crew Escape System": None
+    }
+    
+    for component in components:
+        response = input(f"Do you want to include {component} in your space shuttle? (yes/no): ").strip().lower()
+        if response == 'yes':
+            components[component] = get_component_details(component)
+    
+    return components
+
+def calculate_specifications(num_tanks, primary_tank_capacity, exploration_tank_capacity, components):
+    # Define base specifications
+    base_weight = 2000  # Base weight in kg
+    base_length = 37.2  # Base length in meters
+    base_width = 23.8  # Base width in meters
+    base_height = 17.2  # Base height in meters
+    
+    # Initial specifications
+    total_weight = base_weight
+    max_length = base_length
+    max_width = base_width
+    max_height = base_height
+    
+    # Modify specifications based on the number and capacity of fuel tanks
+    total_weight += num_tanks * 500  # Each fuel tank adds 500 kg
+    total_weight += primary_tank_capacity * 0.8  # Primary tank fuel weight
+    total_weight += exploration_tank_capacity * 0.6  # Exploration tank fuel weight
+    
+    # Modify specifications based on included components
+    for component, specs in components.items():
+        if specs:
+            length, width, height, weight = specs
+            total_weight += weight
+            max_length = max(max_length, length)
+            max_width = max(max_width, width)
+            max_height = max(max_height, height)
+    
+    return total_weight, max_length, max_width, max_height
+
+def main():
+    print("Welcome to the Space Shuttle Builder!")
+    
+    num_tanks, primary_tank_capacity, exploration_tank_capacity = get_fuel_tanks()
+    components = get_components()
+    weight, length, width, height = calculate_specifications(num_tanks, primary_tank_capacity, exploration_tank_capacity, components)
+    
+    print("\nSpace Shuttle Specifications:")
+    print(f"Weight: {weight} kg")
+    print(f"Length: {length} meters")
+    print(f"Width: {width} meters")
+    print(f"Height: {height} meters")
+
+if __name__ == "__main__":
+    main()
